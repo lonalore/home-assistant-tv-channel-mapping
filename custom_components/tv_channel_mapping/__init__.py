@@ -82,15 +82,16 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry):
 
     import voluptuous as vol
 
-    # Bypass schema validation to fix "extra keys not allowed" error
-    # Accepting any dict allows "channel_name" to pass through freely.
-    _LOGGER.info("Registering tune_channel service with permissive schema (vol.Any(dict)).")
+    # VERSION 1.1.1 DEBUG LOG - IF YOU DON'T SEE THIS, CODE IS OLD
+    _LOGGER.warning("TV Channel Mapping: Registering tune_channel service (v1.1.1) with permissive schema.")
     
     hass.services.async_register(
         DOMAIN, 
-        "tune_channel_safe", 
+        "tune_channel", 
         async_tune_channel,
-        schema=vol.Any(dict)
+        schema=vol.Schema({
+            vol.Optional("channel_name"): vol.Any(str, None),
+        }, extra=vol.ALLOW_EXTRA)
     )
 
     # Register LLM Tool if available
