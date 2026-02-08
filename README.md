@@ -62,8 +62,6 @@ data:
   channel_name: "TV2"
 ```
 
-
-
 **Automatic AI Discovery (Recommended)**:
 On Home Assistant 2024.6+, this integration automatically registers a `tv_channel_mapping_tune_channel` tool. Your AI agent should see this automatically without any configuration!
 
