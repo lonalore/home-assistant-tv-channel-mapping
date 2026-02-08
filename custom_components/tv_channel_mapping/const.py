@@ -4,6 +4,7 @@ DOMAIN = "tv_channel_mapping"
 
 CONF_PROVIDER = "provider"
 CONF_CHANNELS = "channels"
+CONF_TV_ENTITY = "tv_entity"
 
 DEFAULT_PROVIDER = "HU One"
 
