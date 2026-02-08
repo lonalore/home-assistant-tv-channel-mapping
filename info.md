@@ -47,6 +47,9 @@ For advanced use cases (like Extended OpenAI Conversation), use the dedicated se
 
 **Automatic Discovery**: If you use Home Assistant 2024.6 or newer, this integration automatically registers a "Tune Channel" tool for AI agents. You likely don't need any extra setup!
 
+**Manual Script**: If you use a Script, make sure to tell your AI about it in the System Prompt:
+> "You have access to a script called `script.tune_tv_channel`. Use it to change TV channels. Pass the channel name as `channel_name`."
+
 ## Configuration
 
 1. Go to **Settings > Devices & Services**.

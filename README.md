@@ -104,6 +104,8 @@ sequence:
 ```
 7.  Save.
 8.  **Expose** this script to your Voice Assistant (Settings > Voice Assistants > Assist > Expose).
+9.  **Important**: Update your AI's System Prompt (e.g. in Extended OpenAI Conversation config) with the following instruction:
+    > "You have access to a script called `script.tune_tv_channel` (or whatever you named it). Use it whenever the user asks to change the TV channel. Pass the channel name (e.g., 'RTL', 'TV2') as the `channel_name` argument."
 
 ### Sensor Entity
 
