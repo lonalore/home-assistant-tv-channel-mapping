@@ -104,39 +104,39 @@ async def _async_tune_channel_logic(hass: HomeAssistant, entry: ConfigEntry, cha
         _LOGGER.error("Integration not loaded properly")
         raise ValueError("Integration not loaded")
 
-    provider_channels = data.get("base_channels", {})
+    # Base channels is a LIST of dicts
+    provider_channels_list = data.get("base_channels", [])
     
     # Apply Options
     options = entry.options
-    custom_channels = options.get("custom_channels", {})
+    custom_channels_list = options.get("custom_channels", [])
     deleted_channels = options.get("deleted_channels", [])
-    renamed_channels = options.get("renamed_channels", {})
+    overrides = options.get("overrides", {}) # Renames are stored here
 
-    # Merge base and custom
-    all_channels = provider_channels.copy()
-    for ch_num, ch_data in custom_channels.items():
-        all_channels[ch_num] = ch_data
+    # Build a master map keyed by ID to handle merges and deletions easily
+    # Start with provider channels
+    all_channels_map = {ch["id"]: ch for ch in provider_channels_list}
+    
+    # Add/Overwrite with custom channels
+    for ch in custom_channels_list:
+        all_channels_map[ch["id"]] = ch
 
-    # Filter deleted
-    active_channels = {
-        k: v for k, v in all_channels.items() 
-        if k not in deleted_channels
+    # Filter out deleted channels
+    active_channels_map = {
+        c_id: ch_data for c_id, ch_data in all_channels_map.items()
+        if c_id not in deleted_channels
     }
 
     # Find target channel number
     target_number = None
     target_name_match = channel_name_input.lower().strip()
 
-    for ch_num, ch_data in active_channels.items():
-        # Check original name
-        name = ch_data.get("name", "").lower()
-        
-        # Check rename
-        if ch_num in renamed_channels:
-            name = renamed_channels[ch_num].lower()
+    for c_id, ch_data in active_channels_map.items():
+        # Get effective name (override or original)
+        name = overrides.get(c_id, ch_data["name"]).lower()
         
         if name == target_name_match:
-            target_number = ch_num
+            target_number = ch_data["number"]
             break
     
     if not target_number:
