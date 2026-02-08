@@ -65,6 +65,36 @@ data:
 **OpenAI Prompt Example**:
 > "You have access to the `tv_channel_mapping.tune_channel` tool. If the user asks to change the channel, call this tool with the channel name as the argument."
 
+#### Recommended: Wrap in a Script
+To ensure your AI assistant (OpenAI, Assist) can "see" this tool easily, it is best to wrap it in a **Script**:
+
+1.  Go to **Settings > Automations & Scenes > Scripts**.
+2.  Create a new Script (**Add Script**).
+3.  Name: "Tune TV Channel".
+4.  Mode: Single.
+5.  **Sequence**: Call Service `TV Channel Mapping: Tune Channel`.
+    *   Channel Name: `{{ channel_name }}`
+6.  **Fields** (Important for AI):
+    *   Field: `channel_name`
+    *   name: Channel Name
+    *   description: The name of the channel (e.g. RTL)
+
+**YAML Code for Script:**
+```yaml
+alias: Tune TV Channel
+description: Switches the TV to a specific channel.
+fields:
+  channel_name:
+    description: Name of the channel (e.g. RTL, HBO)
+    example: RTL
+sequence:
+  - service: tv_channel_mapping.tune_channel
+    data:
+      channel_name: "{{ channel_name }}"
+```
+7.  Save.
+8.  **Expose** this script to your Voice Assistant (Settings > Voice Assistants > Assist > Expose).
+
 ### Sensor Entity
 
 The integration creates `sensor.tv_channel_mapping`. The state is the current provider name. The attributes contain the channel mapping.
