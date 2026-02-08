@@ -81,7 +81,16 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry):
         
         await _async_tune_channel_logic(hass, entry, channel_name_input)
 
-    hass.services.async_register(DOMAIN, "tune_channel", async_tune_channel)
+    import voluptuous as vol
+
+    hass.services.async_register(
+        DOMAIN, 
+        "tune_channel", 
+        async_tune_channel,
+        schema=vol.Schema({
+            vol.Required("channel_name"): str,
+        })
+    )
 
     # Register LLM Tool if available
     try:
