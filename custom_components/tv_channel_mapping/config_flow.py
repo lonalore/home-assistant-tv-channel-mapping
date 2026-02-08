@@ -12,7 +12,19 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.selector import EntitySelector, EntitySelectorConfig
 import uuid
 
-from .const import DOMAIN, PROVIDERS, CONF_PROVIDER, DEFAULT_PROVIDER, CONF_TV_ENTITY
+from .const import (
+    DOMAIN, 
+    PROVIDERS, 
+    CONF_PROVIDER, 
+    DEFAULT_PROVIDER, 
+    CONF_TV_ENTITY,
+    CONF_CONTROL_METHOD,
+    CONF_SCRIPT_ENTITY,
+    METHOD_DIRECT,
+    METHOD_SCRIPT,
+    CONTROL_METHODS,
+    DEFAULT_CONTROL_METHOD
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -34,6 +46,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         vol.Required(CONF_PROVIDER, default=DEFAULT_PROVIDER): vol.In(PROVIDERS),
                         vol.Required(CONF_TV_ENTITY): EntitySelector(
                             EntitySelectorConfig(domain="media_player")
+                        ),
+                        vol.Required(CONF_CONTROL_METHOD, default=DEFAULT_CONTROL_METHOD): vol.In(CONTROL_METHODS),
+                        vol.Optional(CONF_SCRIPT_ENTITY): EntitySelector(
+                            EntitySelectorConfig(domain="script")
                         ),
                     }
                 ),
@@ -81,11 +97,19 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_select_provider(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle provider selection."""
+        """Handle provider and control selection."""
         if user_input is not None:
             new_data = dict(self.config_entry.data)
             new_data[CONF_PROVIDER] = user_input[CONF_PROVIDER]
             new_data[CONF_TV_ENTITY] = user_input[CONF_TV_ENTITY]
+            new_data[CONF_CONTROL_METHOD] = user_input[CONF_CONTROL_METHOD]
+            
+            # optional script entity
+            if CONF_SCRIPT_ENTITY in user_input:
+                new_data[CONF_SCRIPT_ENTITY] = user_input[CONF_SCRIPT_ENTITY]
+            elif CONF_SCRIPT_ENTITY in new_data and user_input[CONF_CONTROL_METHOD] == METHOD_DIRECT:
+                 # Remove script entity if switching back to direct
+                 new_data.pop(CONF_SCRIPT_ENTITY, None)
             
             self.hass.config_entries.async_update_entry(self.config_entry, data=new_data)
             
@@ -95,6 +119,8 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
         current_provider = self.config_entry.data.get(CONF_PROVIDER, DEFAULT_PROVIDER)
         current_tv = self.config_entry.data.get(CONF_TV_ENTITY)
+        current_method = self.config_entry.data.get(CONF_CONTROL_METHOD, DEFAULT_CONTROL_METHOD)
+        current_script = self.config_entry.data.get(CONF_SCRIPT_ENTITY)
 
         return self.async_show_form(
             step_id="select_provider",
@@ -103,6 +129,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     vol.Required(CONF_PROVIDER, default=current_provider): vol.In(PROVIDERS),
                     vol.Required(CONF_TV_ENTITY, default=current_tv): EntitySelector(
                         EntitySelectorConfig(domain="media_player")
+                    ),
+                    vol.Required(CONF_CONTROL_METHOD, default=current_method): vol.In(CONTROL_METHODS),
+                     vol.Optional(CONF_SCRIPT_ENTITY, description={"suggested_value": current_script}): EntitySelector(
+                        EntitySelectorConfig(domain="script")
                     ),
                 }
             ),
