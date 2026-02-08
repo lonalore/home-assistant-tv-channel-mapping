@@ -111,7 +111,7 @@ class SwitchChannelIntent(intent.IntentHandler):
         if target_number is None:
             raise intent.IntentHandleError(f"Channel '{channel_name_clean}' not found.")
 
-        _LOGGER.info("Switching %s to channel %s (%s)", target_tv, channel_name, target_number)
+        _LOGGER.info("Switching %s to channel %s (%s)", target_tv, channel_name_clean, target_number)
 
         # Call the service
         await hass.services.async_call(
@@ -125,5 +125,5 @@ class SwitchChannelIntent(intent.IntentHandler):
         )
 
         response = intent_obj.create_response()
-        response.async_set_speech(f"Switched to {channel_name}")
+        response.async_set_speech(f"Switched to {channel_name_clean}")
         return response
