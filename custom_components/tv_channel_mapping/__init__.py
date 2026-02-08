@@ -78,18 +78,19 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry):
     async def async_tune_channel(call):
         """Handle the tune_channel service call."""
         channel_name_input = call.data.get("channel_name")
-        
         await _async_tune_channel_logic(hass, entry, channel_name_input)
 
     import voluptuous as vol
 
+    # Bypass schema validation to fix "extra keys not allowed" error
+    # Accepting any dict allows "channel_name" to pass through freely.
+    _LOGGER.info("Registering tune_channel service with permissive schema (vol.Any(dict)).")
+    
     hass.services.async_register(
         DOMAIN, 
         "tune_channel", 
         async_tune_channel,
-        schema=vol.Schema({
-            vol.Required("channel_name"): str,
-        }, extra=vol.ALLOW_EXTRA)
+        schema=vol.Any(dict)
     )
 
     # Register LLM Tool if available
