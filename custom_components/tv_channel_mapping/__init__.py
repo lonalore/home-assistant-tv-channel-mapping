@@ -79,78 +79,122 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry):
         """Handle the tune_channel service call."""
         channel_name_input = call.data.get("channel_name")
         
-        if not channel_name_input:
-            _LOGGER.error("No channel name provided")
-            return
-
-        # Find the active config entry (assuming one for simplicity, or find associated)
-        # Since service is global, we pick the first loaded entry or the one passed setup
-        # For this component, typically one instance is used.
-        # We can use the entry passed to setup.
-        
-        data = hass.data[DOMAIN].get(entry.entry_id)
-        if not data:
-            _LOGGER.error("Integration not loaded properly")
-            return
-
-        provider_channels = data.get("base_channels", {})
-        
-        # Apply Options (Custom channels, renames, deletes)
-        options = entry.options
-        custom_channels = options.get("custom_channels", {})
-        deleted_channels = options.get("deleted_channels", [])
-        renamed_channels = options.get("renamed_channels", {})
-
-        # Merge base and custom
-        all_channels = provider_channels.copy()
-        for ch_num, ch_data in custom_channels.items():
-            all_channels[ch_num] = ch_data
-
-        # Filter deleted
-        active_channels = {
-            k: v for k, v in all_channels.items() 
-            if k not in deleted_channels
-        }
-
-        # Find target channel number
-        target_number = None
-        target_name_match = channel_name_input.lower().strip()
-
-        for ch_num, ch_data in active_channels.items():
-            # Check original name
-            name = ch_data.get("name", "").lower()
-            
-            # Check rename
-            if ch_num in renamed_channels:
-                name = renamed_channels[ch_num].lower()
-            
-            if name == target_name_match:
-                target_number = ch_num
-                break
-        
-        if not target_number:
-            _LOGGER.warning(f"Channel '{channel_name_input}' not found in active channel list.")
-            raise ValueError(f"Channel '{channel_name_input}' not found")
-
-        target_tv = entry.data.get("tv_entity")
-        if not target_tv:
-             _LOGGER.error("No target TV entity configured")
-             return
-
-        _LOGGER.info(f"Service: Tuning {target_tv} to {target_number} ({channel_name_input})")
-        
-        await hass.services.async_call(
-            "media_player",
-            "play_media",
-            {
-                "entity_id": target_tv,
-                "media_content_id": target_number,
-                "media_content_type": "channel",
-            },
-        )
+        await _async_tune_channel_logic(hass, entry, channel_name_input)
 
     hass.services.async_register(DOMAIN, "tune_channel", async_tune_channel)
 
+    # Register LLM Tool if available
+    try:
+        from homeassistant.helpers import llm
+        llm.async_register_tool(hass, TvChannelTool(hass, entry))
+    except ImportError:
+        _LOGGER.warning("LLM helper not found, automatic AI tool registration skipped.")
+    except Exception as e:
+        _LOGGER.warning(f"Failed to register LLM tool: {e}")
+
+
+async def _async_tune_channel_logic(hass: HomeAssistant, entry: ConfigEntry, channel_name_input: str):
+    """Reusable logic for tuning the channel."""
+    if not channel_name_input:
+        _LOGGER.error("No channel name provided")
+        raise ValueError("No channel name provided")
+
+    data = hass.data[DOMAIN].get(entry.entry_id)
+    if not data:
+        _LOGGER.error("Integration not loaded properly")
+        raise ValueError("Integration not loaded")
+
+    provider_channels = data.get("base_channels", {})
+    
+    # Apply Options
+    options = entry.options
+    custom_channels = options.get("custom_channels", {})
+    deleted_channels = options.get("deleted_channels", [])
+    renamed_channels = options.get("renamed_channels", {})
+
+    # Merge base and custom
+    all_channels = provider_channels.copy()
+    for ch_num, ch_data in custom_channels.items():
+        all_channels[ch_num] = ch_data
+
+    # Filter deleted
+    active_channels = {
+        k: v for k, v in all_channels.items() 
+        if k not in deleted_channels
+    }
+
+    # Find target channel number
+    target_number = None
+    target_name_match = channel_name_input.lower().strip()
+
+    for ch_num, ch_data in active_channels.items():
+        # Check original name
+        name = ch_data.get("name", "").lower()
+        
+        # Check rename
+        if ch_num in renamed_channels:
+            name = renamed_channels[ch_num].lower()
+        
+        if name == target_name_match:
+            target_number = ch_num
+            break
+    
+    if not target_number:
+        _LOGGER.warning(f"Channel '{channel_name_input}' not found in active channel list.")
+        raise ValueError(f"Channel '{channel_name_input}' not found")
+
+    target_tv = entry.data.get("tv_entity")
+    if not target_tv:
+            _LOGGER.error("No target TV entity configured")
+            raise ValueError("No target TV entity configured")
+
+    _LOGGER.info(f"Tuning {target_tv} to {target_number} ({channel_name_input})")
+    
+    await hass.services.async_call(
+        "media_player",
+        "play_media",
+        {
+            "entity_id": target_tv,
+            "media_content_id": target_number,
+            "media_content_type": "channel",
+        },
+    )
+
+
+try:
+    from homeassistant.helpers import llm
+    import voluptuous as vol
+
+    class TvChannelTool(llm.Tool):
+        """LLM Tool for switching TV channels."""
+
+        def __init__(self, hass: HomeAssistant, entry: ConfigEntry):
+            """Init the tool."""
+            self.hass = hass
+            self.entry = entry
+
+        @property
+        def metadata(self) -> llm.ToolMetadata:
+            """Return metadata for the tool."""
+            return llm.ToolMetadata(
+                name="tv_channel_mapping_tune_channel",
+                description="Switches the TV to a specific channel by its name (e.g., 'RTL', 'HBO', 'Discovery').",
+                parameters=vol.Schema({
+                    vol.Required("channel_name"): str,
+                }),
+            )
+
+        async def async_call(self, hass: HomeAssistant, tool_input: llm.ToolInput, llm_context: llm.LLMContext) -> dict:
+            """Call the tool."""
+            channel_name = tool_input.tool_args.get("channel_name")
+            try:
+                await _async_tune_channel_logic(hass, self.entry, channel_name)
+                return {"result": f"Switched to {channel_name}"}
+            except Exception as e:
+                return {"error": str(e)}
+
+except ImportError:
+    pass
 
 def load_json_data(path: str) -> dict:
     """Load JSON data from file."""

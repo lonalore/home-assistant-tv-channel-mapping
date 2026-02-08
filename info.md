@@ -45,7 +45,7 @@ For advanced use cases (like Extended OpenAI Conversation), use the dedicated se
 *   **Service**: `tv_channel_mapping.tune_channel`
 *   **Data**: `channel_name: "RTL"`
 
-This ensures the AI doesn't need to guess channel numbers.
+**Automatic Discovery**: If you use Home Assistant 2024.6 or newer, this integration automatically registers a "Tune Channel" tool for AI agents. You likely don't need any extra setup!
 
 ## Configuration
 

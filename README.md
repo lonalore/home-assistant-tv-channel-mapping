@@ -62,11 +62,21 @@ data:
   channel_name: "TV2"
 ```
 
-**OpenAI Prompt Example**:
-> "You have access to the `tv_channel_mapping.tune_channel` tool. If the user asks to change the channel, call this tool with the channel name as the argument."
+**Example YAML**:
+```yaml
+service: tv_channel_mapping.tune_channel
+data:
+  channel_name: "TV2"
+```
 
-#### Recommended: Wrap in a Script
-To ensure your AI assistant (OpenAI, Assist) can "see" this tool easily, it is best to wrap it in a **Script**:
+**Automatic AI Discovery (Recommended)**:
+On Home Assistant 2024.6+, this integration automatically registers a `tv_channel_mapping_tune_channel` tool. Your AI agent should see this automatically without any configuration!
+
+**OpenAI Prompt Example**:
+> "You have access to the `tv_channel_mapping_tune_channel` tool. If the user asks to change the channel, call this tool with the channel name as the argument."
+
+#### Manual Method: Wrap in a Script
+If the automatic discovery doesn't work for your setup, you can wrap the service in a **Script**:
 
 1.  Go to **Settings > Automations & Scenes > Scripts**.
 2.  Create a new Script (**Add Script**).
