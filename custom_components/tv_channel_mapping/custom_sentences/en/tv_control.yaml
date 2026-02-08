@@ -1,0 +1,14 @@
+language: "en"
+intents:
+  TvChannelSwitch:
+    data:
+      - sentences:
+          - "Switch [the] [living room] TV to channel {channel_name}"
+          - "Switch [the] [living room] TV to {channel_name}"
+          - "Change [the] [living room] TV to channel {channel_name}"
+          - "Change [the] [living room] TV to {channel_name}"
+          - "Put on {channel_name}"
+          - "Turn on {channel_name}"
+lists:
+  channel_name:
+    wildcard: true

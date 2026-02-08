@@ -10,15 +10,22 @@ Manage TV channel mappings in Home Assistant. Includes presets for **HU One** an
 
 - **Select Provider**: Choose from built-in presets or create your own list.
 - **Channel Mapping**: Automatically creates a sensor with attributes for all channels.
+- **Voice Control**: Native support for Home Assistant Assist (e.g., "Kapcsold a tévét az RTL-re").
 - **Customization**:
   - **Add Custom Channels**: Build your own channel list from scratch or extend the presets.
   - **Rename**: Rename channels to your liking (e.g., "RTL" -> "RTL Klub").
   - **Delete**: Hide channels you don't use.
-- **Easy Updates**: Switch providers at any time via the UI.
+- **Easy Updates**: Switch providers or target TV at any time via the UI.
 
 ## Usage
 
-The integration creates `sensor.tv_channel_mapping`.
+### Voice Control (Assist)
+Just say:
+- *"Switch TV to RTL"*
+- *"Change to channel TV2"*
+- *"Put on BBC News"*
+
+The integration automatically creates `sensor.tv_channel_mapping`.
 - **State**: The name of the currently selected provider.
 - **Attributes**: A dictionary of channels (`Name: Number`).
 

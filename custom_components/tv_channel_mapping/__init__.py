@@ -10,6 +10,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN
+from .intent import async_setup_intents
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -18,6 +19,9 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up TV Channel Mapping from a config entry."""
+    
+    # Set up intents (idempotent registry)
+    await async_setup_intents(hass)
     
     # Load the provider data
     provider = entry.data.get("provider")

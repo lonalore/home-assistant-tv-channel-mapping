@@ -33,8 +33,20 @@ It comes with presets for Hungarian providers (HU One, HU Digi), but supports **
 2.  Click **Add Integration** button.
 3.  Search for **TV Channel Mapping** and select it.
 4.  Select your provider (e.g., HU Digi or HU One).
+5.  Select the **Target TV** (The `media_player` entity you want to control).
 
 ## Usage
+
+### Voice Control
+The integration automatically registers voice commands (English and Hungarian). You can control the configured TV by saying:
+
+- *"Switch TV to RTL"*
+- *"Change to channel TV2"*
+- *"Put on Discovery Channel"*
+
+The channel name is matched against your active channel list.
+
+### Sensor Entity
 
 The integration creates `sensor.tv_channel_mapping`. The state is the current provider name. The attributes contain the channel mapping.
 

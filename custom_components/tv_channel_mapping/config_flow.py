@@ -9,9 +9,10 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers.selector import EntitySelector, EntitySelectorConfig
 import uuid
 
-from .const import DOMAIN, PROVIDERS, CONF_PROVIDER, DEFAULT_PROVIDER
+from .const import DOMAIN, PROVIDERS, CONF_PROVIDER, DEFAULT_PROVIDER, CONF_TV_ENTITY
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -31,6 +32,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 data_schema=vol.Schema(
                     {
                         vol.Required(CONF_PROVIDER, default=DEFAULT_PROVIDER): vol.In(PROVIDERS),
+                        vol.Required(CONF_TV_ENTITY): EntitySelector(
+                            EntitySelectorConfig(domain="media_player")
+                        ),
                     }
                 ),
             )
@@ -78,25 +82,28 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle provider selection."""
-        # ... existing implementation ...
         if user_input is not None:
             new_data = dict(self.config_entry.data)
             new_data[CONF_PROVIDER] = user_input[CONF_PROVIDER]
+            new_data[CONF_TV_ENTITY] = user_input[CONF_TV_ENTITY]
+            
             self.hass.config_entries.async_update_entry(self.config_entry, data=new_data)
-            # Reset overrides/customizations when switching provider?
-            # For now, let's keep them, but they might apply to wrong IDs if IDs match.
-            # Ideally we might want to warn or clear. Let's clear custom channels but keep overrides if IDs match?
-            # Simpler: Clear everything to avoid confusion.
+            
+            # Reset overrides/customizations when switching provider/tv?
             self.hass.config_entries.async_update_entry(self.config_entry, options={})
             return self.async_create_entry(title="", data={})
 
         current_provider = self.config_entry.data.get(CONF_PROVIDER, DEFAULT_PROVIDER)
+        current_tv = self.config_entry.data.get(CONF_TV_ENTITY)
 
         return self.async_show_form(
             step_id="select_provider",
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_PROVIDER, default=current_provider): vol.In(PROVIDERS),
+                    vol.Required(CONF_TV_ENTITY, default=current_tv): EntitySelector(
+                        EntitySelectorConfig(domain="media_player")
+                    ),
                 }
             ),
         )

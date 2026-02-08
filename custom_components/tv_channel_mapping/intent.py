@@ -1,0 +1,117 @@
+"""Intent handler for TV Channel Mapping."""
+from __future__ import annotations
+
+import logging
+from typing import Any
+
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import intent
+from homeassistant.config_entries import ConfigEntry
+
+from .const import DOMAIN, CONF_TV_ENTITY
+
+_LOGGER = logging.getLogger(__name__)
+
+INTENT_SWITCH_CHANNEL = "TvChannelSwitch"
+
+
+async def async_setup_intents(hass: HomeAssistant) -> None:
+    """Set up intents for the integration."""
+    intent.async_register(hass, SwitchChannelIntent())
+
+
+class SwitchChannelIntent(intent.IntentHandler):
+    """Handle switching TV channels."""
+
+    intent_type = INTENT_SWITCH_CHANNEL
+    slot_schema = {
+        "channel_name": str,
+    }
+
+    async def async_handle(self, intent_obj: intent.Intent) -> intent.IntentResponse:
+        """Handle the intent."""
+        hass = intent_obj.hass
+        slots = self.async_validate_slots(intent_obj.slots, self.slot_schema)
+        channel_name = slots["channel_name"]["value"].lower()
+
+        _LOGGER.debug("Received intent to switch channel to: %s", channel_name)
+
+        # Iterate over all config entries to find the channel
+        # Assumption: User likely has only one TV Channel Mapping entry active, 
+        # or intents might match multiple. We'll use the first match.
+        
+        # We need to access the active mapping from hass.data or the sensor
+        # Let's look at config entries for this domain.
+        
+        entry = None
+        target_number = None
+        target_tv = None
+        
+        if DOMAIN not in hass.data:
+            raise intent.IntentHandleError("Integration not loaded")
+
+        for entry_id, data in hass.data[DOMAIN].items():
+            # Get the sensor's current mapping.
+            # We implemented the mapping logic in the sensor entity itself, but we should probably 
+            # share that logic or access the sensor state.
+            # ACCESSING SENSOR STATE IS HARD HERE without knowing the entity ID.
+            # But the data is in `data["base_channels"]` plus options in the config entry.
+            
+            # Find the config entry object to get options
+            cfg_entry = hass.config_entries.async_get_entry(entry_id)
+            if not cfg_entry:
+                continue
+
+            target_tv = cfg_entry.data.get(CONF_TV_ENTITY)
+            if not target_tv:
+                continue
+
+            # Reconstruct mapping (logic duped from sensor.py, ideally refactor)
+            base_channels = data["base_channels"]
+            overrides = cfg_entry.options.get("overrides", {})
+            custom_channels = cfg_entry.options.get("custom_channels", [])
+            deleted_channels = cfg_entry.options.get("deleted_channels", [])
+
+            found_number = None
+            
+            # Check base
+            for ch in base_channels:
+                if ch["id"] in deleted_channels:
+                    continue
+                c_name = overrides.get(ch["id"], ch["name"])
+                if c_name.lower() == channel_name:
+                    found_number = ch["number"]
+                    break
+            
+            # Check custom
+            if found_number is None:
+                for ch in custom_channels:
+                    c_name = overrides.get(ch["id"], ch["name"])
+                    if c_name.lower() == channel_name:
+                        found_number = ch["number"]
+                        break
+            
+            if found_number is not None:
+                target_number = found_number
+                entry = cfg_entry
+                break
+        
+        if target_number is None:
+            raise intent.IntentHandleError(f"Channel '{channel_name}' not found.")
+
+        _LOGGER.info("Switching %s to channel %s (%s)", target_tv, channel_name, target_number)
+
+        # Call the service
+        await hass.services.async_call(
+            "media_player",
+            "play_media",
+            {
+                "entity_id": target_tv,
+                "media_content_id": target_number,
+                "media_content_type": "channel",
+            },
+        )
+
+        response = intent_obj.create_response()
+        response.async_set_speech(f"Switched to {channel_name}")
+        return response
