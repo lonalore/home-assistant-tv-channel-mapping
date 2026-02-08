@@ -40,6 +40,13 @@ data:
   media_content_type: channel
 ```
 
+### External Control (OpenAI / Scripts)
+For advanced use cases (like Extended OpenAI Conversation), use the dedicated service:
+*   **Service**: `tv_channel_mapping.tune_channel`
+*   **Data**: `channel_name: "RTL"`
+
+This ensures the AI doesn't need to guess channel numbers.
+
 ## Configuration
 
 1. Go to **Settings > Devices & Services**.

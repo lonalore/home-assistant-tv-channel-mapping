@@ -52,6 +52,25 @@ The integration automatically registers voice commands (English and Hungarian). 
 
 The channel name is matched against your active channel list.
 
+### External Integrations (OpenAI, Scripts)
+
+For third-party integrations like **Extended OpenAI Conversation**, using the voice intent might not be enough. The integration exposes a dedicated service to allow LLMs to control the TV reliably without guessing channel numbers.
+
+**Service**: `tv_channel_mapping.tune_channel`
+
+**Parameters**:
+- `channel_name` (Required): The name of the channel to match (e.g., "RTL", "HBO").
+
+**Example YAML**:
+```yaml
+service: tv_channel_mapping.tune_channel
+data:
+  channel_name: "TV2"
+```
+
+**OpenAI Prompt Example**:
+> "You have access to the `tv_channel_mapping.tune_channel` tool. If the user asks to change the channel, call this tool with the channel name as the argument."
+
 ### Sensor Entity
 
 The integration creates `sensor.tv_channel_mapping`. The state is the current provider name. The attributes contain the channel mapping.
