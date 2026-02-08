@@ -40,6 +40,31 @@ If you want to test the latest changes without creating a new release every time
 3.  Search for **TV Channel Mapping** and select it.
 4.  Select your provider (e.g., HU Digi or HU One).
 5.  Select the **Target TV** (The `media_player` entity you want to control).
+6.  Select **Control Method** (Default: Direct).
+    - **Direct**: Uses standard `media_player.play_media` (Works for LG WebOS, Android TV).
+    - **Script**: Executes a custom script (Necessary for Samsung, Broadlink, etc.).
+
+### Using Script Control (Samsung / IR)
+If you select **Script** as the control method, you must provide a `script` entity. The integration will call this script with:
+- `channel_number`: The number (e.g., "106").
+- `channel_name`: The name (e.g., "rtl").
+
+**Example Script (`scripts.yaml`):**
+```yaml
+switch_tv_channel:
+  alias: "Switch TV Channel"
+  fields:
+    channel_number:
+      description: "Channel number"
+      example: "106"
+  sequence:
+    - service: remote.send_command
+      target:
+        entity_id: remote.broadlink_remote
+      data:
+        device: "tv"
+        command: "b_{{ channel_number }}"
+```
 
 ## Usage
 
