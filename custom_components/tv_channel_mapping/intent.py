@@ -8,13 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import intent
 from homeassistant.config_entries import ConfigEntry
 
-from .const import (
-    DOMAIN, 
-    CONF_TV_ENTITY, 
-    CONF_CONTROL_METHOD, 
-    CONF_SCRIPT_ENTITY, 
-    METHOD_SCRIPT
-)
+from .const import DOMAIN, CONF_TV_ENTITY
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -117,35 +111,18 @@ class SwitchChannelIntent(intent.IntentHandler):
         if target_number is None:
             raise intent.IntentHandleError(f"Channel '{channel_name_clean}' not found.")
 
-        # Determine control method
-        control_method = entry.data.get(CONF_CONTROL_METHOD)
-        script_entity = entry.data.get(CONF_SCRIPT_ENTITY)
+        _LOGGER.info("Switching %s to channel %s (%s)", target_tv, channel_name_clean, target_number)
 
-        if control_method == METHOD_SCRIPT and script_entity:
-            _LOGGER.info("Switching channel using script %s with channel %s", script_entity, target_number)
-            await hass.services.async_call(
-                "script",
-                "turn_on",
-                {
-                    "entity_id": script_entity,
-                    "variables": {
-                        "channel_number": target_number,
-                        "channel_name": channel_name_clean
-                    }
-                }
-            )
-        else:
-            # Default to direct control (play_media)
-            _LOGGER.info("Switching %s to channel %s (%s) via direct control", target_tv, channel_name_clean, target_number)
-            await hass.services.async_call(
-                "media_player",
-                "play_media",
-                {
-                    "entity_id": target_tv,
-                    "media_content_id": target_number,
-                    "media_content_type": "channel",
-                },
-            )
+        # Call the service
+        await hass.services.async_call(
+            "media_player",
+            "play_media",
+            {
+                "entity_id": target_tv,
+                "media_content_id": target_number,
+                "media_content_type": "channel",
+            },
+        )
 
         response = intent_obj.create_response()
         response.async_set_speech(f"Switched to {channel_name_clean}")
