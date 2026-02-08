@@ -7,4 +7,4 @@ tune_channel:
       description: The name of the channel to switch to (e.g., "RTL", "HBO").
       required: true
       selector:
-        text:
+        text: {}

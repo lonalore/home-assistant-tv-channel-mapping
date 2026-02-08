@@ -89,7 +89,7 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry):
         async_tune_channel,
         schema=vol.Schema({
             vol.Required("channel_name"): str,
-        })
+        }, extra=vol.ALLOW_EXTRA)
     )
 
     # Register LLM Tool if available
