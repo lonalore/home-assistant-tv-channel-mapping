@@ -42,7 +42,7 @@ data:
 
 ### External Control (OpenAI / Scripts)
 For advanced use cases (like Extended OpenAI Conversation), use the dedicated service:
-*   **Service**: `tv_channel_mapping.tune_channel_safe`
+*   **Service**: `tv_channel_mapping.tune_channel`
 *   **Data**: `channel_name: "RTL"`
 
 **Automatic Discovery**: If you use Home Assistant 2024.6 or newer, this integration automatically registers a "Tune Channel" tool for AI agents. You likely don't need any extra setup!
@@ -63,7 +63,7 @@ fields:
     description: Name of the channel (e.g. RTL, HBO)
     example: RTL
 sequence:
-  - action: tv_channel_mapping.tune_channel_safe
+  - action: tv_channel_mapping.tune_channel
     data:
       channel_name: "{{ channel_name }}"
 ```

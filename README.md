@@ -50,30 +50,30 @@ The channel name is matched against your active channel list.
 
 For third-party integrations like **Extended OpenAI Conversation**, using the voice intent might not be enough. The integration exposes a dedicated service to allow LLMs to control the TV reliably without guessing channel numbers.
 
-**Service**: `tv_channel_mapping.tune_channel_safe`
+**Service**: `tv_channel_mapping.tune_channel`
 
 **Parameters**:
 - `channel_name` (Required): The name of the channel to match (e.g., "RTL", "HBO").
 
 **Example YAML**:
 ```yaml
-service: tv_channel_mapping.tune_channel_safe
+service: tv_channel_mapping.tune_channel
 data:
   channel_name: "TV2"
 ```
 
 **Example YAML**:
 ```yaml
-service: tv_channel_mapping.tune_channel_safe
+service: tv_channel_mapping.tune_channel
 data:
   channel_name: "TV2"
 ```
 
 **Automatic AI Discovery (Recommended)**:
-On Home Assistant 2024.6+, this integration automatically registers a `tv_channel_mapping_tune_channel_safe` tool. Your AI agent should see this automatically without any configuration!
+On Home Assistant 2024.6+, this integration automatically registers a `tv_channel_mapping_tune_channel` tool. Your AI agent should see this automatically without any configuration!
 
 **OpenAI Prompt Example**:
-> "You have access to the `tv_channel_mapping.tune_channel_safe` tool. If the user asks to change the channel, call this tool with the channel name as the argument."
+> "You have access to the `tv_channel_mapping.tune_channel` tool. If the user asks to change the channel, call this tool with the channel name as the argument."
 
 #### Manual Method: Wrap in a Script
 If the automatic discovery doesn't work for your setup, you can wrap the action in a **Script**:
@@ -98,7 +98,7 @@ fields:
     description: Name of the channel (e.g. RTL, HBO)
     example: RTL
 sequence:
-  - action: tv_channel_mapping.tune_channel_safe
+  - action: tv_channel_mapping.tune_channel
     data:
       channel_name: "{{ channel_name }}"
 ```
