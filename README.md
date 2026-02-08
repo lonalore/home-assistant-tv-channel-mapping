@@ -28,6 +28,12 @@ It comes with presets for Hungarian providers (HU One, HU Digi), but supports **
 2.  Copy the `custom_components/tv_channel_mapping` folder to your Home Assistant `config/custom_components/` directory.
 3.  Restart Home Assistant.
 
+### Development / Testing (No Release)
+
+If you want to test the latest changes without creating a new release every time:
+1.  **Manual**: Just copy the files to `custom_components/tv_channel_mapping` and restart HA.
+2.  **HACS**: When installing/reinstalling, verify that you can select the **master** (or main) branch instead of a version number. This pulls the latest code directly.
+
 ## Configuration
 1.  Go to **Settings -> Devices & Services**.
 2.  Click **Add Integration** button.
