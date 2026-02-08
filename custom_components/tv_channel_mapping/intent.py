@@ -32,16 +32,25 @@ class SwitchChannelIntent(intent.IntentHandler):
         """Handle the intent."""
         hass = intent_obj.hass
         slots = self.async_validate_slots(intent_obj.slots, self.slot_schema)
-        channel_name = slots["channel_name"]["value"].lower()
+        channel_name_raw = slots["channel_name"]["value"].lower()
 
-        _LOGGER.debug("Received intent to switch channel to: %s", channel_name)
+        # Handle Hungarian suffixes (-ra, -re)
+        # Examples: rtl-re, tv2-re, hbo-ra
+        channel_name_clean = channel_name_raw
+        if channel_name_raw.endswith("-re"):
+             channel_name_clean = channel_name_raw[:-3]
+        elif channel_name_raw.endswith("-ra"):
+             channel_name_clean = channel_name_raw[:-3]
+        elif channel_name_raw.endswith("re") and len(channel_name_raw) > 2:
+             # Basic heuristic for "RTLre" (if STT misses hyphen)
+             channel_name_clean = channel_name_raw[:-2]
+        elif channel_name_raw.endswith("ra") and len(channel_name_raw) > 2:
+             channel_name_clean = channel_name_raw[:-2]
+
+        _LOGGER.debug("Received intent to switch channel. Raw: %s, Cleaned: %s", channel_name_raw, channel_name_clean)
 
         # Iterate over all config entries to find the channel
-        # Assumption: User likely has only one TV Channel Mapping entry active, 
-        # or intents might match multiple. We'll use the first match.
-        
-        # We need to access the active mapping from hass.data or the sensor
-        # Let's look at config entries for this domain.
+        # Assumption: User likely has only one TV Channel Mapping entry active.
         
         entry = None
         target_number = None
@@ -51,13 +60,6 @@ class SwitchChannelIntent(intent.IntentHandler):
             raise intent.IntentHandleError("Integration not loaded")
 
         for entry_id, data in hass.data[DOMAIN].items():
-            # Get the sensor's current mapping.
-            # We implemented the mapping logic in the sensor entity itself, but we should probably 
-            # share that logic or access the sensor state.
-            # ACCESSING SENSOR STATE IS HARD HERE without knowing the entity ID.
-            # But the data is in `data["base_channels"]` plus options in the config entry.
-            
-            # Find the config entry object to get options
             cfg_entry = hass.config_entries.async_get_entry(entry_id)
             if not cfg_entry:
                 continue
@@ -74,12 +76,22 @@ class SwitchChannelIntent(intent.IntentHandler):
 
             found_number = None
             
+            # Helper to check match
+            def check_match(name_to_check):
+                name_norm = name_to_check.lower()
+                # Exact match against raw or clean
+                if name_norm == channel_name_raw: 
+                    return True
+                if name_norm == channel_name_clean:
+                    return True
+                return False
+
             # Check base
             for ch in base_channels:
                 if ch["id"] in deleted_channels:
                     continue
                 c_name = overrides.get(ch["id"], ch["name"])
-                if c_name.lower() == channel_name:
+                if check_match(c_name):
                     found_number = ch["number"]
                     break
             
@@ -87,7 +99,7 @@ class SwitchChannelIntent(intent.IntentHandler):
             if found_number is None:
                 for ch in custom_channels:
                     c_name = overrides.get(ch["id"], ch["name"])
-                    if c_name.lower() == channel_name:
+                    if check_match(c_name):
                         found_number = ch["number"]
                         break
             
@@ -97,7 +109,7 @@ class SwitchChannelIntent(intent.IntentHandler):
                 break
         
         if target_number is None:
-            raise intent.IntentHandleError(f"Channel '{channel_name}' not found.")
+            raise intent.IntentHandleError(f"Channel '{channel_name_clean}' not found.")
 
         _LOGGER.info("Switching %s to channel %s (%s)", target_tv, channel_name, target_number)
 

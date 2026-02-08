@@ -3,16 +3,14 @@ intents:
   TvChannelSwitch:
     data:
       - sentences:
-          - "Kapcsold a [nappali] tévét a {channel_name} csatornára"
-          - "Kapcsold a [nappali] tévét az {channel_name} csatornára"
-          - "Kapcsold a [nappali] tévét a {channel_name} adóra"
-          - "Kapcsold a [nappali] tévét az {channel_name} adóra"
-          - "Válts a [nappali] tévén a {channel_name} csatornára"
-          - "Válts a [nappali] tévén az {channel_name} csatornára"
-          - "Válts a {channel_name} csatornára"
-          - "Válts az {channel_name} csatornára"
-          - "Válts a {channel_name} adóra"
-          - "Válts az {channel_name} adóra"
+          - "Kapcsold a [nappali] tévét a {channel_name} [csatornára|adóra]"
+          - "Kapcsold a [nappali] tévét az {channel_name} [csatornára|adóra]"
+          - "Kapcsold a [nappali] tévét [a|az] {channel_name}"
+          - "Válts a [nappali] tévén a {channel_name} [csatornára|adóra]"
+          - "Válts a [nappali] tévén az {channel_name} [csatornára|adóra]"
+          - "Válts a [nappali] tévén [a|az] {channel_name}"
+          - "Válts [a|az] {channel_name} [csatornára|adóra]"
+          - "Válts [a|az] {channel_name}"
 lists:
   channel_name:
     wildcard: true
