@@ -88,7 +88,7 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry):
     
     hass.services.async_register(
         DOMAIN, 
-        "tune_channel", 
+        "tune_channel_safe", 
         async_tune_channel,
         schema=vol.Any(dict)
     )
