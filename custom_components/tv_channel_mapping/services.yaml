@@ -1,4 +1,4 @@
-tune_channel:
+tune_channel_new:
   name: Tune Channel
   description: Switches the TV to a specific channel by name.
   fields:
