@@ -1,0 +1,60 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Select TV Service Provider",
+                "data": {
+                    "provider": "Provider",
+                    "tv_entity": "Target TV Entity"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "unknown": "Unexpected error"
+        },
+        "abort": {
+            "already_configured": "Device is already configured"
+        }
+    },
+    "options": {
+        "step": {
+            "menu": {
+                "title": "TV Channel Mapping Options",
+                "menu_options": {
+                    "select_provider": "Select Provider / TV",
+                    "rename_channel": "Rename Channel",
+                    "add_channel": "Add Custom Channel",
+                    "delete_channel": "Delete Channel"
+                }
+            },
+            "select_provider": {
+                "title": "Select Provider",
+                "data": {
+                    "provider": "Provider",
+                    "tv_entity": "Target TV Entity"
+                }
+            },
+            "rename_channel": {
+                "title": "Rename Channel",
+                "data": {
+                    "channel_to_rename": "Channel to Rename",
+                    "new_name": "New Name"
+                }
+            },
+            "add_channel": {
+                "title": "Add Custom Channel",
+                "data": {
+                    "channel_name": "Channel Name",
+                    "channel_number": "Channel Number"
+                }
+            },
+            "delete_channel": {
+                "title": "Delete Channel",
+                "data": {
+                    "channel_to_delete": "Channel to Delete"
+                }
+            }
+        }
+    }
+}

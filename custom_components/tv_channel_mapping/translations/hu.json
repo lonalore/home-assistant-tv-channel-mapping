@@ -1,0 +1,60 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Válassz TV Szolgáltatót",
+                "data": {
+                    "provider": "Szolgáltató",
+                    "tv_entity": "Vezérelni kívánt TV"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Sikertelen kapcsolódás",
+            "unknown": "Váratlan hiba"
+        },
+        "abort": {
+            "already_configured": "Az eszköz már konfigurálva van"
+        }
+    },
+    "options": {
+        "step": {
+            "menu": {
+                "title": "TV Csatorna Beállítások",
+                "menu_options": {
+                    "select_provider": "Szolgáltató / TV kiválasztása",
+                    "rename_channel": "Csatorna átnevezése",
+                    "add_channel": "Egyedi csatorna hozzáadása",
+                    "delete_channel": "Csatorna törlése"
+                }
+            },
+            "select_provider": {
+                "title": "Szolgáltató kiválasztása",
+                "data": {
+                    "provider": "Szolgáltató",
+                    "tv_entity": "Vezérelni kívánt TV"
+                }
+            },
+            "rename_channel": {
+                "title": "Csatorna átnevezése",
+                "data": {
+                    "channel_to_rename": "Átnevezendő csatorna",
+                    "new_name": "Új név"
+                }
+            },
+            "add_channel": {
+                "title": "Egyedi csatorna hozzáadása",
+                "data": {
+                    "channel_name": "Csatorna neve",
+                    "channel_number": "Csatorna száma"
+                }
+            },
+            "delete_channel": {
+                "title": "Csatorna törlése",
+                "data": {
+                    "channel_to_delete": "Törlendő csatorna"
+                }
+            }
+        }
+    }
+}
