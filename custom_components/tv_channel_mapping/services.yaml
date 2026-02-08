@@ -1,0 +1,10 @@
+tune_channel:
+  name: Tune Channel
+  description: Switches the TV to a specific channel by name.
+  fields:
+    channel_name:
+      name: Channel Name
+      description: The name of the channel to switch to (e.g., "RTL", "HBO").
+      required: true
+      selector:
+        text:
