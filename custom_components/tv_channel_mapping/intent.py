@@ -31,7 +31,7 @@ class SwitchChannelIntent(intent.IntentHandler):
     async def async_handle(self, intent_obj: intent.Intent) -> intent.IntentResponse:
         """Handle the intent."""
         hass = intent_obj.hass
-        slots = self.async_validate_slots(intent_obj.slots, self.slot_schema)
+        slots = self.async_validate_slots(intent_obj.slots)
         channel_name_raw = slots["channel_name"]["value"].lower()
 
         # Handle Hungarian suffixes (-ra, -re)
