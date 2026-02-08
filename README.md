@@ -73,16 +73,16 @@ data:
 On Home Assistant 2024.6+, this integration automatically registers a `tv_channel_mapping_tune_channel` tool. Your AI agent should see this automatically without any configuration!
 
 **OpenAI Prompt Example**:
-> "You have access to the `tv_channel_mapping_tune_channel` tool. If the user asks to change the channel, call this tool with the channel name as the argument."
+> "You have access to the `tv_channel_mapping.tune_channel` tool. If the user asks to change the channel, call this tool with the channel name as the argument."
 
 #### Manual Method: Wrap in a Script
-If the automatic discovery doesn't work for your setup, you can wrap the service in a **Script**:
+If the automatic discovery doesn't work for your setup, you can wrap the action in a **Script**:
 
 1.  Go to **Settings > Automations & Scenes > Scripts**.
 2.  Create a new Script (**Add Script**).
 3.  Name: "Tune TV Channel".
 4.  Mode: Single.
-5.  **Sequence**: Call Service `TV Channel Mapping: Tune Channel`.
+5.  **Sequence**: Perform Action `TV Channel Mapping: Tune Channel`.
     *   Channel Name: `{{ channel_name }}`
 6.  **Fields** (Important for AI):
     *   Field: `channel_name`
@@ -98,7 +98,7 @@ fields:
     description: Name of the channel (e.g. RTL, HBO)
     example: RTL
 sequence:
-  - service: tv_channel_mapping.tune_channel
+  - action: tv_channel_mapping.tune_channel
     data:
       channel_name: "{{ channel_name }}"
 ```
