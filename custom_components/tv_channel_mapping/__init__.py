@@ -82,14 +82,16 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry):
 
     import voluptuous as vol
 
-    # VERSION 1.1.2 DEBUG LOG - IF YOU DON'T SEE THIS, CODE IS OLD
-    _LOGGER.warning("TV Channel Mapping: Registering tune_channel_new service (v1.1.2) to bypass cache.")
+    # VERSION 1.1.1 DEBUG LOG - IF YOU DON'T SEE THIS, CODE IS OLD
+    _LOGGER.warning("TV Channel Mapping: Registering tune_channel service (v1.1.1) with permissive schema.")
     
     hass.services.async_register(
         DOMAIN, 
-        "tune_channel_new", 
+        "tune_channel", 
         async_tune_channel,
-        schema=vol.Any(dict) # No schema checks at all
+        schema=vol.Schema({
+            vol.Optional("channel_name"): vol.Any(str, None),
+        }, extra=vol.ALLOW_EXTRA)
     )
 
     # Register LLM Tool if available
