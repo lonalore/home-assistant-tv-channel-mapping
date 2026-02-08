@@ -1,0 +1,545 @@
+{
+    "provider": "HU One",
+    "channels": [
+        {
+            "id": "tv-channel-0002",
+            "name": "M1 HD",
+            "number": 2
+        },
+        {
+            "id": "tv-channel-0004",
+            "name": "M2 HD/Petőfi TV HD",
+            "number": 4
+        },
+        {
+            "id": "tv-channel-0006",
+            "name": "Duna HD",
+            "number": 6
+        },
+        {
+            "id": "tv-channel-0008",
+            "name": "M4 Sport HD",
+            "number": 8
+        },
+        {
+            "id": "tv-channel-0010",
+            "name": "Duna World HD/M4 Sport+ HD",
+            "number": 10
+        },
+        {
+            "id": "tv-channel-0012",
+            "name": "M5 HD",
+            "number": 12
+        },
+        {
+            "id": "tv-channel-0023",
+            "name": "TV4 HD",
+            "number": 23
+        },
+        {
+            "id": "tv-channel-0032",
+            "name": "RTL HD",
+            "number": 32
+        },
+        {
+            "id": "tv-channel-0034",
+            "name": "TV2 HD",
+            "number": 34
+        },
+        {
+            "id": "tv-channel-0036",
+            "name": "VIASAT3 HD",
+            "number": 36
+        },
+        {
+            "id": "tv-channel-0037",
+            "name": "VIASAT6",
+            "number": 37
+        },
+        {
+            "id": "tv-channel-0039",
+            "name": "SuperTV2 HD",
+            "number": 39
+        },
+        {
+            "id": "tv-channel-0041",
+            "name": "Moziverzum HD",
+            "number": 41
+        },
+        {
+            "id": "tv-channel-0042",
+            "name": "RTL KETTŐ HD",
+            "number": 42
+        },
+        {
+            "id": "tv-channel-0043",
+            "name": "Film+ HD",
+            "number": 43
+        },
+        {
+            "id": "tv-channel-0044",
+            "name": "Mozi+ HD",
+            "number": 44
+        },
+        {
+            "id": "tv-channel-0045",
+            "name": "Moziklub",
+            "number": 45
+        },
+        {
+            "id": "tv-channel-0046",
+            "name": "Cool HD",
+            "number": 46
+        },
+        {
+            "id": "tv-channel-0048",
+            "name": "Sorozat+",
+            "number": 48
+        },
+        {
+            "id": "tv-channel-0049",
+            "name": "RTL Gold",
+            "number": 49
+        },
+        {
+            "id": "tv-channel-0050",
+            "name": "AXN HD",
+            "number": 50
+        },
+        {
+            "id": "tv-channel-0052",
+            "name": "VIASAT Film",
+            "number": 52
+        },
+        {
+            "id": "tv-channel-0053",
+            "name": "VIASAT2",
+            "number": 53
+        },
+        {
+            "id": "tv-channel-0054",
+            "name": "Jocky TV",
+            "number": 54
+        },
+        {
+            "id": "tv-channel-0055",
+            "name": "Izaura TV",
+            "number": 55
+        },
+        {
+            "id": "tv-channel-0061",
+            "name": "PRIME HD",
+            "number": 61
+        },
+        {
+            "id": "tv-channel-0063",
+            "name": "STORY4 HD",
+            "number": 63
+        },
+        {
+            "id": "tv-channel-0065",
+            "name": "Film Mánia HD",
+            "number": 65
+        },
+        {
+            "id": "tv-channel-0066",
+            "name": "Film Cafe HD",
+            "number": 66
+        },
+        {
+            "id": "tv-channel-0068",
+            "name": "RTL HÁROM HD",
+            "number": 68
+        },
+        {
+            "id": "tv-channel-0069",
+            "name": "AMC HD",
+            "number": 69
+        },
+        {
+            "id": "tv-channel-0076",
+            "name": "TV2 Comedy",
+            "number": 76
+        },
+        {
+            "id": "tv-channel-0077",
+            "name": "FilmBox HD",
+            "number": 77
+        },
+        {
+            "id": "tv-channel-0078",
+            "name": "Magyar Mozi TV",
+            "number": 78
+        },
+        {
+            "id": "tv-channel-0079",
+            "name": "Sorozatklub",
+            "number": 79
+        },
+        {
+            "id": "tv-channel-0080",
+            "name": "CANAL+ Action HD",
+            "number": 80
+        },
+        {
+            "id": "tv-channel-0082",
+            "name": "Max4",
+            "number": 82
+        },
+        {
+            "id": "tv-channel-0084",
+            "name": "GALAXY4 HD",
+            "number": 84
+        },
+        {
+            "id": "tv-channel-0085",
+            "name": "Epic Drama HD",
+            "number": 85
+        },
+        {
+            "id": "tv-channel-0086",
+            "name": "Film4 HD",
+            "number": 86
+        },
+        {
+            "id": "tv-channel-0091",
+            "name": "ATV HD",
+            "number": 91
+        },
+        {
+            "id": "tv-channel-0093",
+            "name": "Hír TV HD",
+            "number": 93
+        },
+        {
+            "id": "tv-channel-0094",
+            "name": "Euronews HD",
+            "number": 94
+        },
+        {
+            "id": "tv-channel-0151",
+            "name": "Spíler1 TV HD",
+            "number": 151
+        },
+        {
+            "id": "tv-channel-0152",
+            "name": "Sport1 HD",
+            "number": 152
+        },
+        {
+            "id": "tv-channel-0153",
+            "name": "Spíler2 TV HD",
+            "number": 153
+        },
+        {
+            "id": "tv-channel-0154",
+            "name": "Sport2 HD",
+            "number": 154
+        },
+        {
+            "id": "tv-channel-0156",
+            "name": "Eurosport 1 HD",
+            "number": 156
+        },
+        {
+            "id": "tv-channel-0158",
+            "name": "Eurosport 2 HD",
+            "number": 158
+        },
+        {
+            "id": "tv-channel-0162",
+            "name": "Fishing & Hunting HD",
+            "number": 162
+        },
+        {
+            "id": "tv-channel-0165",
+            "name": "ARENA4 HD",
+            "number": 165
+        },
+        {
+            "id": "tv-channel-0166",
+            "name": "MATCH4 HD",
+            "number": 166
+        },
+        {
+            "id": "tv-channel-0202",
+            "name": "Spektrum HD",
+            "number": 202
+        },
+        {
+            "id": "tv-channel-0204",
+            "name": "BBC Earth HD",
+            "number": 204
+        },
+        {
+            "id": "tv-channel-0205",
+            "name": "National Geographic HD",
+            "number": 205
+        },
+        {
+            "id": "tv-channel-0206",
+            "name": "Nat Geo Wild",
+            "number": 206
+        },
+        {
+            "id": "tv-channel-0207",
+            "name": "Discovery Channel HD",
+            "number": 207
+        },
+        {
+            "id": "tv-channel-0210",
+            "name": "Animal Planet HD",
+            "number": 210
+        },
+        {
+            "id": "tv-channel-0212",
+            "name": "HGTV HD",
+            "number": 212
+        },
+        {
+            "id": "tv-channel-0213",
+            "name": "RTL OTTHON HD",
+            "number": 213
+        },
+        {
+            "id": "tv-channel-0214",
+            "name": "TLC",
+            "number": 214
+        },
+        {
+            "id": "tv-channel-0215",
+            "name": "ID HD",
+            "number": 215
+        },
+        {
+            "id": "tv-channel-0216",
+            "name": "History Channel HD",
+            "number": 216
+        },
+        {
+            "id": "tv-channel-0217",
+            "name": "Ozone TV HD",
+            "number": 217
+        },
+        {
+            "id": "tv-channel-0218",
+            "name": "Fashion TV",
+            "number": 218
+        },
+        {
+            "id": "tv-channel-0220",
+            "name": "Viasat Explore HD",
+            "number": 220
+        },
+        {
+            "id": "tv-channel-0221",
+            "name": "Viasat History HD",
+            "number": 221
+        },
+        {
+            "id": "tv-channel-0222",
+            "name": "Viasat Nature HD",
+            "number": 222
+        },
+        {
+            "id": "tv-channel-0223",
+            "name": "Travel Channel HD",
+            "number": 223
+        },
+        {
+            "id": "tv-channel-0225",
+            "name": "Life TV HD",
+            "number": 225
+        },
+        {
+            "id": "tv-channel-0251",
+            "name": "TV Paprika HD",
+            "number": 251
+        },
+        {
+            "id": "tv-channel-0252",
+            "name": "Spektrum Home HD",
+            "number": 252
+        },
+        {
+            "id": "tv-channel-0254",
+            "name": "TV2 Séf",
+            "number": 254
+        },
+        {
+            "id": "tv-channel-0255",
+            "name": "Food Network HD",
+            "number": 255
+        },
+        {
+            "id": "tv-channel-0257",
+            "name": "TV2 Klub",
+            "number": 257
+        },
+        {
+            "id": "tv-channel-0259",
+            "name": "Da Vinci",
+            "number": 259
+        },
+        {
+            "id": "tv-channel-0302",
+            "name": "Disney Channel",
+            "number": 302
+        },
+        {
+            "id": "tv-channel-0303",
+            "name": "Duck TV",
+            "number": 303
+        },
+        {
+            "id": "tv-channel-0304",
+            "name": "Nickelodeon",
+            "number": 304
+        },
+        {
+            "id": "tv-channel-0306",
+            "name": "Nick Jr",
+            "number": 306
+        },
+        {
+            "id": "tv-channel-0307",
+            "name": "Minimax",
+            "number": 307
+        },
+        {
+            "id": "tv-channel-0308",
+            "name": "Cartoonito",
+            "number": 308
+        },
+        {
+            "id": "tv-channel-0309",
+            "name": "Cartoon Network",
+            "number": 309
+        },
+        {
+            "id": "tv-channel-0310",
+            "name": "Jim Jam",
+            "number": 310
+        },
+        {
+            "id": "tv-channel-0311",
+            "name": "Baby TV",
+            "number": 311
+        },
+        {
+            "id": "tv-channel-0312",
+            "name": "TV2 Kids",
+            "number": 312
+        },
+        {
+            "id": "tv-channel-0313",
+            "name": "Nicktoons HD",
+            "number": 313
+        },
+        {
+            "id": "tv-channel-0315",
+            "name": "Kölyökklub HD",
+            "number": 315
+        },
+        {
+            "id": "tv-channel-0351",
+            "name": "Mezzo HD",
+            "number": 351
+        },
+        {
+            "id": "tv-channel-0353",
+            "name": "Muzsika TV",
+            "number": 353
+        },
+        {
+            "id": "tv-channel-0354",
+            "name": "Zenebutik",
+            "number": 354
+        },
+        {
+            "id": "tv-channel-0356",
+            "name": "MTV European",
+            "number": 356
+        },
+        {
+            "id": "tv-channel-0360",
+            "name": "Sláger TV HD",
+            "number": 360
+        },
+        {
+            "id": "tv-channel-0361",
+            "name": "Dikh TV HD",
+            "number": 361
+        },
+        {
+            "id": "tv-channel-0401",
+            "name": "CNN International (angol)",
+            "number": 401
+        },
+        {
+            "id": "tv-channel-0402",
+            "name": "BBC News (angol)",
+            "number": 402
+        },
+        {
+            "id": "tv-channel-0404",
+            "name": "English Club HD (angol)",
+            "number": 404
+        },
+        {
+            "id": "tv-channel-0405",
+            "name": "Al Jazeera English (angol)",
+            "number": 405
+        },
+        {
+            "id": "tv-channel-0406",
+            "name": "TV5MONDE Europe (francia)",
+            "number": 406
+        },
+        {
+            "id": "tv-channel-0407",
+            "name": "TVE (spanyol)",
+            "number": 407
+        },
+        {
+            "id": "tv-channel-0408",
+            "name": "ZDF (német)",
+            "number": 408
+        },
+        {
+            "id": "tv-channel-0410",
+            "name": "SAT.1 (német)",
+            "number": 410
+        },
+        {
+            "id": "tv-channel-0413",
+            "name": "ORF2 (német)",
+            "number": 413
+        },
+        {
+            "id": "tv-channel-0414",
+            "name": "Rai Uno (olasz)",
+            "number": 414
+        },
+        {
+            "id": "tv-channel-0416",
+            "name": "CCTV 4 (kínai)",
+            "number": 416
+        },
+        {
+            "id": "tv-channel-0552",
+            "name": "Pax Televízió",
+            "number": 552
+        },
+        {
+            "id": "tv-channel-0553",
+            "name": "EWTN",
+            "number": 553
+        },
+        {
+            "id": "tv-channel-0556",
+            "name": "Heti TV",
+            "number": 556
+        }
+    ]
+}

@@ -1,0 +1,10 @@
+{
+    "domain": "tv_channel_mapping",
+    "name": "TV Channel Mapping",
+    "codeowners": [],
+    "config_flow": true,
+    "documentation": "https://github.com/lonalore/home-assistant-tv-channel-mapping",
+    "issue_tracker": "https://github.com/lonalore/home-assistant-tv-channel-mapping/issues",
+    "iot_class": "local_polling",
+    "version": "1.0.0"
+}
