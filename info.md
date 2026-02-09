@@ -68,6 +68,14 @@ If automatic discovery doesn't work, you can explicitly define the function in *
       - service: tv_channel_mapping.tune_channel
         data:
           channel_name: "{{ channel_name }}"
+
+- spec:
+    name: get_available_channels
+    description: Returns a list of available TV channels.
+  function:
+    type: native
+    name: execute_service
+    service: tv_channel_mapping.get_channel_list
 ```
 This allows the AI to control the TV directly without any scripts.
 
