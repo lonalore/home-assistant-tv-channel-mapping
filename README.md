@@ -68,37 +68,31 @@ On Home Assistant 2024.6+, this integration automatically registers a `tv_channe
 **OpenAI Prompt Example**:
 > "You have access to the `tv_channel_mapping.tune_channel` tool. If the user asks to change the channel, call this tool with the channel name as the argument."
 
-#### Manual Method: Wrap in a Script
-If the automatic discovery doesn't work for your setup, you can wrap the action in a **Script**:
+#### Method B: Direct Function Configuration (Best for Extended OpenAI)
+If automatic discovery doesn't work, you can explicitly define the function in **Extended OpenAI Conversation** settings.
 
-1.  Go to **Settings > Automations & Scenes > Scripts**.
-2.  Create a new Script (**Add Script**).
-3.  Name: "Tune TV Channel".
-4.  Mode: Single.
-5.  **Sequence**: Perform Action `TV Channel Mapping: Tune Channel`.
-    *   Channel Name: `{{ channel_name }}`
-6.  **Fields** (Important for AI):
-    *   Field: `channel_name`
-    *   name: Channel Name
-    *   description: The name of the channel (e.g. RTL)
+1.  Go to **Extended OpenAI Conversation** configuration.
+2.  Find the **Functions** section.
+3.  Add the following YAML block:
 
-**YAML Code for Script:**
 ```yaml
-alias: Tune TV Channel
-description: Switches the TV to a specific channel.
-fields:
-  channel_name:
-    description: Name of the channel (e.g. RTL, HBO)
-    example: RTL
-sequence:
-  - action: tv_channel_mapping.tune_channel
-    data:
-      channel_name: "{{ channel_name }}"
+- spec:
+    name: tune_channel
+    description: Switches the TV to a specific channel by name. Use this whenever the user asks to change the channel.
+    parameters:
+      type: object
+      properties:
+        channel_name:
+          type: string
+          description: The name of the channel (e.g. RTL, HBO, Discovery).
+      required:
+        - channel_name
+  function:
+    type: native
+    name: execute_service
+    service: tv_channel_mapping.tune_channel
 ```
-7.  Save.
-8.  **Expose** this script to your Voice Assistant (Settings > Voice Assistants > Assist > Expose).
-9.  **Important**: Update your AI's System Prompt (e.g. in Extended OpenAI Conversation config) with the following instruction:
-    > "You have access to a script called `script.tune_tv_channel` (or whatever you named it). Use it whenever the user asks to change the TV channel. Pass the channel name (e.g., 'RTL', 'TV2') as the `channel_name` argument."
+4.  Save. The AI can now directly control the TV! No scripts needed.
 
 ### Sensor Entity
 

@@ -47,31 +47,27 @@ For advanced use cases (like Extended OpenAI Conversation), use the dedicated se
 
 **Automatic Discovery**: If you use Home Assistant 2024.6 or newer, this integration automatically registers a "Tune Channel" tool for AI agents. You likely don't need any extra setup!
 
-**Manual Script Setup (Recommended Fallback)**:
-If automatic discovery doesn't work, create a script manually:
-
-1.  Go to **Settings > Automations & Scenes > Scripts**.
-2.  Create a new Script (**Add Script**).
-3.  Click the 3 dots (top right) -> **Edit in YAML**.
-4.  Paste this code:
+#### Method B: Direct Function Configuration (Best for Extended OpenAI)
+If automatic discovery doesn't work, you can explicitly define the function in **Extended OpenAI Conversation** settings under the **Functions** section:
 
 ```yaml
-alias: TV Channel Control
-description: Switches the TV to a specific channel.
-fields:
-  channel_name:
-    description: Name of the channel (e.g. RTL, HBO)
-    example: RTL
-sequence:
-  - action: tv_channel_mapping.tune_channel
-    data:
-      channel_name: "{{ channel_name }}"
+- spec:
+    name: tune_channel
+    description: Switches the TV to a specific channel by name.
+    parameters:
+      type: object
+      properties:
+        channel_name:
+          type: string
+          description: The name of the channel (e.g. RTL, HBO).
+      required:
+        - channel_name
+  function:
+    type: native
+    name: execute_service
+    service: tv_channel_mapping.tune_channel
 ```
-
-5.  Save the script.
-6.  **Expose** it to your Voice Assistant (Settings > Voice Assistants > Assist > Expose).
-7.  **System Prompt**: Update your AI's instructions:
-    > "You have access to a script called `script.tv_channel_control`. Use it whenever the user asks to change the TV channel. Pass the channel name (e.g., 'RTL', 'TV2') as the `channel_name` argument."
+This allows the AI to control the TV directly without any scripts.
 
 ## Configuration
 
