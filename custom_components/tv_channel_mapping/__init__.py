@@ -17,6 +17,13 @@ _LOGGER = logging.getLogger(__name__)
 PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 
+async def async_setup(hass: HomeAssistant, config: dict) -> bool:
+    """Set up the TV Channel Mapping component."""
+    # Register services globally
+    await async_register_global_services(hass)
+    return True
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up TV Channel Mapping from a config entry."""
     
@@ -50,8 +57,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     entry.async_on_unload(entry.add_update_listener(update_listener))
 
-    # Register services
-    await async_setup_services(hass, entry)
+    # Register LLM Tools (Best Effort) - These depend on the specific entry/device context
+    # This block allows automatic discovery on supported HA versions (2024.6+)
+    # while failing silently (or with debug log) on older versions.
+    try:
+        from homeassistant.helpers import llm
+        if hasattr(llm, "async_register_tool"):
+            try:
+                llm.async_register_tool(hass, TvChannelTool(hass, entry))
+                llm.async_register_tool(hass, TvChannelListTool(hass, entry))
+            except Exception as e:
+                 _LOGGER.debug(f"Automatic LLM tool registration failed (this is harmless): {e}")
+        else:
+            _LOGGER.debug("LLM helper found but async_register_tool not available (HA version too old?)")
+    except ImportError:
+        pass
+    except Exception as e:
+        _LOGGER.debug(f"Failed to register LLM tool: {e}")
 
     return True
 
@@ -72,16 +94,32 @@ async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     await hass.config_entries.async_reload(entry.entry_id)
 
 
-async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry):
-    """Register services for the component."""
+
+async def async_register_global_services(hass: HomeAssistant):
+    """Register global services for the component."""
+
+    def get_target_entry(call) -> ConfigEntry | None:
+        """Helper to get the target config entry."""
+        entries = hass.config_entries.async_entries(DOMAIN)
+        if not entries:
+            return None
+        return entries[0]
 
     async def async_tune_channel(call):
         """Handle the tune_channel service call."""
+        entry = get_target_entry(call)
+        if not entry:
+            raise ValueError("No TV Channel Mapping configuration found.")
+        
         channel_name_input = call.data.get("channel_name")
         await _async_tune_channel_logic(hass, entry, channel_name_input)
 
     async def async_get_channel_list(call) -> dict:
         """Return a list of available channels."""
+        entry = get_target_entry(call)
+        if not entry:
+            raise ValueError("No TV Channel Mapping configuration found.")
+
         data = hass.data[DOMAIN].get(entry.entry_id)
         if not data:
             raise ValueError("Integration not loaded")
@@ -103,16 +141,16 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry):
                 name = overrides.get(c_id, ch_data["name"])
                 active_channels.append(name)
         
-        # Sort for better readability for AI
         active_channels.sort()
-        
         return {"channels": active_channels}
 
     import voluptuous as vol
     from homeassistant.core import SupportsResponse
 
-    # VERSION 1.1.4 DEBUG LOG
-    _LOGGER.info("TV Channel Mapping: Registering services (v1.1.4) including get_channel_list.")
+    if hass.services.has_service(DOMAIN, "tune_channel"):
+        return
+
+    _LOGGER.debug("TV Channel Mapping: Registering global services.")
     
     hass.services.async_register(
         DOMAIN, 
@@ -128,14 +166,6 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry):
         supports_response=SupportsResponse.ONLY
     )
 
-    # Register LLM Tool if available
-    try:
-        from homeassistant.helpers import llm
-        llm.async_register_tool(hass, TvChannelTool(hass, entry))
-    except ImportError:
-        _LOGGER.warning("LLM helper not found, automatic AI tool registration skipped.")
-    except Exception as e:
-        _LOGGER.warning(f"Failed to register LLM tool: {e}")
 
 
 async def _async_tune_channel_logic(hass: HomeAssistant, entry: ConfigEntry, channel_name_input: str):
@@ -238,8 +268,14 @@ async def _async_tune_channel_logic(hass: HomeAssistant, entry: ConfigEntry, cha
     )
 
 
+
+# Define LLM Tools if available
 try:
     from homeassistant.helpers import llm
+except ImportError:
+    llm = None
+
+if llm:
     import voluptuous as vol
 
     class TvChannelTool(llm.Tool):
@@ -287,9 +323,6 @@ try:
         async def async_call(self, hass: HomeAssistant, tool_input: llm.ToolInput, llm_context: llm.LLMContext) -> dict:
             """Call the tool."""
             # Reuse the logic from the service
-            # We need to manually reconstruct the logic or call the service wrapper if possible
-            # But the service wrapper expects a ServiceCall object.
-            # Let's just reuse the logic block.
             
             data = hass.data[DOMAIN].get(self.entry.entry_id)
             if not data:
@@ -313,23 +346,11 @@ try:
             
             active_channels.sort()
             return {"channels": active_channels}
+else:
+    # Fallback to avoid NameError if llm is missing
+    TvChannelTool = None
+    TvChannelListTool = None
 
-    # Register tools (Best Effort)
-    # This block allows automatic discovery on supported HA versions (2024.6+)
-    # while failing silently (or with debug log) on older versions.
-    if hasattr(llm, "async_register_tool"):
-        try:
-            llm.async_register_tool(hass, TvChannelTool(hass, entry))
-            llm.async_register_tool(hass, TvChannelListTool(hass, entry))
-        except Exception as e:
-             _LOGGER.debug(f"Automatic LLM tool registration failed (this is harmless): {e}")
-    else:
-        _LOGGER.debug("LLM helper found but async_register_tool not available (HA version too old?)")
-
-except ImportError:
-    pass
-except Exception as e:
-    _LOGGER.debug(f"Failed to register LLM tool: {e}")
 
 def load_json_data(path: str) -> dict:
     """Load JSON data from file."""
