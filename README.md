@@ -66,7 +66,7 @@ data:
 On Home Assistant 2024.6+, this integration automatically registers a `tv_channel_mapping_tune_channel` tool. Your AI agent should see this automatically without any configuration!
 
 **OpenAI Prompt Example**:
-> "You have access to the `tv_channel_mapping.tune_channel` tool. If the user asks to change the channel, call this tool with the channel name as the argument."
+> "Use `tv_channel_mapping.tune_channel` function when the user asks to change the channel, call this function with the channel name as the argument."
 
 #### Method B: Direct Function Configuration (Best for Extended OpenAI)
 If automatic discovery doesn't work, you can explicitly define the function in **Extended OpenAI Conversation** settings.
