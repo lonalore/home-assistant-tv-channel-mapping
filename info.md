@@ -63,9 +63,11 @@ If automatic discovery doesn't work, you can explicitly define the function in *
       required:
         - channel_name
   function:
-    type: native
-    name: execute_service
-    service: tv_channel_mapping.tune_channel
+    type: script
+    sequence:
+      - service: tv_channel_mapping.tune_channel
+        data:
+          channel_name: "{{ channel_name }}"
 ```
 This allows the AI to control the TV directly without any scripts.
 
