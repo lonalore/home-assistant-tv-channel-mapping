@@ -140,14 +140,29 @@ async def _async_tune_channel_logic(hass: HomeAssistant, entry: ConfigEntry, cha
     target_number = None
     target_name_match = channel_name_input.lower().strip()
 
+    # 1. Exact match attempt
     for c_id, ch_data in active_channels_map.items():
-        # Get effective name (override or original)
         name = overrides.get(c_id, ch_data["name"]).lower()
-        
         if name == target_name_match:
             target_number = ch_data["number"]
             break
     
+    # 2. Fuzzy match attempt (if exact fails)
+    if not target_number:
+        import difflib
+        # Create a map of name -> number for all active channels
+        name_to_number = {}
+        for c_id, ch_data in active_channels_map.items():
+            name = overrides.get(c_id, ch_data["name"]).lower()
+            name_to_number[name] = ch_data["number"]
+        
+        # Find close matches
+        matches = difflib.get_close_matches(target_name_match, name_to_number.keys(), n=1, cutoff=0.6)
+        if matches:
+            best_match = matches[0]
+            target_number = name_to_number[best_match]
+            _LOGGER.info(f"Fuzzy matched '{channel_name_input}' to '{best_match}'")
+
     if not target_number:
         _LOGGER.warning(f"Channel '{channel_name_input}' not found in active channel list.")
         raise ValueError(f"Channel '{channel_name_input}' not found")
