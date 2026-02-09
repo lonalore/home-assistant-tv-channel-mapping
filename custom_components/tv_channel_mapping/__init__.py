@@ -182,8 +182,25 @@ async def _async_tune_channel_logic(hass: HomeAssistant, entry: ConfigEntry, cha
         if name == target_name_match:
             target_number = ch_data["number"]
             break
+            
+    # 2. Substring match attempt (New)
+    # If the user says "RTL", we should match "RTL HD" or "RTL Klub" before trying fuzzy matching.
+    if not target_number:
+        for c_id, ch_data in active_channels_map.items():
+            name = overrides.get(c_id, ch_data["name"]).lower()
+            # Check if input is a word-boundary substring of the channel name
+            # e.g. "rtl" in "rtl hd" -> True
+            if target_name_match in name.split(): 
+                target_number = ch_data["number"]
+                _LOGGER.info(f"Substring matched '{channel_name_input}' to '{overrides.get(c_id, ch_data['name'])}'")
+                break
+            # Also check if it's a prefix (e.g. "film+" matches "film+ hd")
+            if name.startswith(target_name_match):
+                target_number = ch_data["number"]
+                _LOGGER.info(f"Prefix matched '{channel_name_input}' to '{overrides.get(c_id, ch_data['name'])}'")
+                break
     
-    # 2. Fuzzy match attempt (if exact fails)
+    # 3. Fuzzy match attempt (if exact and substring fail)
     if not target_number:
         import difflib
         # Create a map of name -> number for all active channels
