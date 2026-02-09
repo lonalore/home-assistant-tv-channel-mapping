@@ -315,21 +315,23 @@ try:
             return {"channels": active_channels}
 
     # Register tools
-    if hasattr(llm, "async_register_tool"):
-        try:
-            llm.async_register_tool(hass, TvChannelTool(hass, entry))
-            llm.async_register_tool(hass, TvChannelListTool(hass, entry))
-        except AttributeError:
-             _LOGGER.warning("LLM helper has no async_register_tool attribute (despite check), skipping.")
-    else:
-        _LOGGER.debug("LLM helper found but async_register_tool not available (HA version too old?)")
-        # Debug: list attributes to see what is available
-        _LOGGER.debug(f"Available llm attributes: {dir(llm)}")
+    # NOTE: Automatic discovery temporarily disabled until HA version compatibility is fully resolved.
+    # if hasattr(llm, "async_register_tool"):
+    #     try:
+    #         llm.async_register_tool(hass, TvChannelTool(hass, entry))
+    #         llm.async_register_tool(hass, TvChannelListTool(hass, entry))
+    #     except AttributeError:
+    #          _LOGGER.warning("LLM helper has no async_register_tool attribute (despite check), skipping.")
+    # else:
+    #     _LOGGER.debug("LLM helper found but async_register_tool not available (HA version too old?)")
+    #     # Debug: list attributes to see what is available
+    #     _LOGGER.debug(f"Available llm attributes: {dir(llm)}")
 
 except ImportError:
-    _LOGGER.warning("LLM helper not found, automatic AI tool registration skipped.")
+    # _LOGGER.warning("LLM helper not found, automatic AI tool registration skipped.")
+    pass
 except Exception as e:
-    _LOGGER.warning(f"Failed to register LLM tool: {e}")
+    _LOGGER.debug(f"Failed to register LLM tool: {e}")
 
 def load_json_data(path: str) -> dict:
     """Load JSON data from file."""
