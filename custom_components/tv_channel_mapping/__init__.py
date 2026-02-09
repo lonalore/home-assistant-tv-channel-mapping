@@ -316,10 +316,16 @@ try:
 
     # Register tools
     if hasattr(llm, "async_register_tool"):
-        llm.async_register_tool(hass, TvChannelTool(hass, entry))
-        llm.async_register_tool(hass, TvChannelListTool(hass, entry))
+        try:
+            llm.async_register_tool(hass, TvChannelTool(hass, entry))
+            llm.async_register_tool(hass, TvChannelListTool(hass, entry))
+        except AttributeError:
+             _LOGGER.warning("LLM helper has no async_register_tool attribute (despite check), skipping.")
     else:
         _LOGGER.debug("LLM helper found but async_register_tool not available (HA version too old?)")
+        # Debug: list attributes to see what is available
+        _LOGGER.debug(f"Available llm attributes: {dir(llm)}")
+
 except ImportError:
     _LOGGER.warning("LLM helper not found, automatic AI tool registration skipped.")
 except Exception as e:
