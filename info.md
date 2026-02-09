@@ -76,9 +76,10 @@ If automatic discovery doesn't work, you can explicitly define the function in *
     name: get_available_channels
     description: Returns a list of available TV channels.
   function:
-    type: native
-    name: execute_service
-    service: tv_channel_mapping.get_channel_list
+    type: script
+    sequence:
+      - service: tv_channel_mapping.get_channel_list
+        response_variable: _function_result
 ```
 This allows the AI to control the TV directly without any scripts.
 
