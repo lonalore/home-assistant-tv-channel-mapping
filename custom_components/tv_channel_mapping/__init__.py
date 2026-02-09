@@ -263,15 +263,64 @@ try:
 
         async def async_call(self, hass: HomeAssistant, tool_input: llm.ToolInput, llm_context: llm.LLMContext) -> dict:
             """Call the tool."""
-            channel_name = tool_input.tool_args.get("channel_name")
-            try:
-                await _async_tune_channel_logic(hass, self.entry, channel_name)
-                return {"result": f"Switched to {channel_name}"}
-            except Exception as e:
-                return {"error": str(e)}
+            channel_name = tool_input.tool_args["channel_name"]
+            await _async_tune_channel_logic(hass, self.entry, channel_name)
+            return {"success": True, "message": f"Tuned to {channel_name}"}
 
+    class TvChannelListTool(llm.Tool):
+        """LLM Tool for listing available TV channels."""
+
+        def __init__(self, hass: HomeAssistant, entry: ConfigEntry):
+            """Init the tool."""
+            self.hass = hass
+            self.entry = entry
+
+        @property
+        def metadata(self) -> llm.ToolMetadata:
+            """Return metadata for the tool."""
+            return llm.ToolMetadata(
+                name="tv_channel_mapping_get_channels",
+                description="Returns a list of all available TV channels. Use this if you are unsure about a channel name.",
+                parameters=vol.Schema({}),
+            )
+
+        async def async_call(self, hass: HomeAssistant, tool_input: llm.ToolInput, llm_context: llm.LLMContext) -> dict:
+            """Call the tool."""
+            # Reuse the logic from the service
+            # We need to manually reconstruct the logic or call the service wrapper if possible
+            # But the service wrapper expects a ServiceCall object.
+            # Let's just reuse the logic block.
+            
+            data = hass.data[DOMAIN].get(self.entry.entry_id)
+            if not data:
+                return {"error": "Integration not loaded"}
+
+            options = self.entry.options
+            provider_channels_list = data.get("base_channels", [])
+            custom_channels_list = options.get("custom_channels", [])
+            deleted_channels = options.get("deleted_channels", [])
+            overrides = options.get("overrides", {})
+
+            all_channels_map = {ch["id"]: ch for ch in provider_channels_list}
+            for ch in custom_channels_list:
+                all_channels_map[ch["id"]] = ch
+
+            active_channels = []
+            for c_id, ch_data in all_channels_map.items():
+                if c_id not in deleted_channels:
+                    name = overrides.get(c_id, ch_data["name"])
+                    active_channels.append(name)
+            
+            active_channels.sort()
+            return {"channels": active_channels}
+
+    # Register tools
+    llm.async_register_tool(hass, TvChannelTool(hass, entry))
+    llm.async_register_tool(hass, TvChannelListTool(hass, entry))
 except ImportError:
-    pass
+    _LOGGER.warning("LLM helper not found, automatic AI tool registration skipped.")
+except Exception as e:
+    _LOGGER.warning(f"Failed to register LLM tool: {e}")
 
 def load_json_data(path: str) -> dict:
     """Load JSON data from file."""
