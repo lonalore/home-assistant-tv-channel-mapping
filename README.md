@@ -1,5 +1,7 @@
 # Home Assistant TV Channel Mapping
 
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-FFDD00.svg?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/lonalore)
+
 A HACS integration to manage TV channel mappings. 
 
 It comes with presets for Hungarian providers (HU One, HU Digi), but supports **custom channel lists** via the "Add Channel" feature, allowing you to build your own mapping for any provider.

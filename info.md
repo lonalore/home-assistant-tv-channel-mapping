@@ -92,3 +92,9 @@ This allows the AI to control the TV directly without any scripts.
    - Rename Channels
    - Add Custom Channels
    - Delete Channels
+
+## Support
+
+If you enjoy this integration, please consider buying me a coffee! ☕
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-FFDD00.svg?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/lonalore)
