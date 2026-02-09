@@ -80,16 +80,52 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry):
         channel_name_input = call.data.get("channel_name")
         await _async_tune_channel_logic(hass, entry, channel_name_input)
 
-    import voluptuous as vol
+    async def async_get_channel_list(call) -> dict:
+        """Return a list of available channels."""
+        data = hass.data[DOMAIN].get(entry.entry_id)
+        if not data:
+            raise ValueError("Integration not loaded")
 
-    # VERSION 1.1.3 DEBUG LOG - IF YOU DON'T SEE THIS, CODE IS OLD
-    _LOGGER.warning("TV Channel Mapping: Registering tune_channel service (v1.1.3) with permissive schema (vol.Any).")
+        # Re-use logic to get active map
+        options = entry.options
+        provider_channels_list = data.get("base_channels", [])
+        custom_channels_list = options.get("custom_channels", [])
+        deleted_channels = options.get("deleted_channels", [])
+        overrides = options.get("overrides", {})
+
+        all_channels_map = {ch["id"]: ch for ch in provider_channels_list}
+        for ch in custom_channels_list:
+            all_channels_map[ch["id"]] = ch
+
+        active_channels = []
+        for c_id, ch_data in all_channels_map.items():
+            if c_id not in deleted_channels:
+                name = overrides.get(c_id, ch_data["name"])
+                active_channels.append(name)
+        
+        # Sort for better readability for AI
+        active_channels.sort()
+        
+        return {"channels": active_channels}
+
+    import voluptuous as vol
+    from homeassistant.core import SupportsResponse
+
+    # VERSION 1.1.4 DEBUG LOG
+    _LOGGER.info("TV Channel Mapping: Registering services (v1.1.4) including get_channel_list.")
     
     hass.services.async_register(
         DOMAIN, 
         "tune_channel", 
         async_tune_channel,
         schema=vol.Any(dict)
+    )
+
+    hass.services.async_register(
+        DOMAIN,
+        "get_channel_list",
+        async_get_channel_list,
+        supports_response=SupportsResponse.ONLY
     )
 
     # Register LLM Tool if available

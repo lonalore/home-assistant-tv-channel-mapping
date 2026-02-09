@@ -8,3 +8,8 @@ tune_channel:
       required: true
       selector:
         text: {}
+
+get_channel_list:
+  name: Get Channel List
+  description: Returns a list of all available TV channels. Useful for AI assistants.
+  fields: {}
